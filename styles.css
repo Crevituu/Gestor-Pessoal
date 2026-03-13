@@ -187,7 +187,6 @@ body::after {
   z-index: 190;
   backdrop-filter: blur(2px);
 }
-.sidebar-overlay.open { display: block; }
 
 /* ══════════════════════════════════════════
    TOP BAR (mobile only by default, shown always on mobile)
