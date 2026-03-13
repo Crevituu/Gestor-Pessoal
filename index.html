@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#0f0e11">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Minha Vida — Organizador Pessoal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <h1>Minha Vida</h1>
+        <span>Organizador Pessoal</span>
+      </div>
+      <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+    </div>
+    <nav>
+      <div class="nav-item active" onclick="showPage('dashboard')">
+        <span class="icon">🏠</span><span class="nav-label">Dashboard</span>
+      </div>
+      <div class="nav-item" onclick="showPage('calendario')">
+        <span class="icon">📅</span><span class="nav-label">Calendário</span>
+      </div>
+      <div class="nav-item" onclick="showPage('cabelo')">
+        <span class="icon">💇</span><span class="nav-label">Cronograma Capilar</span>
+      </div>
+      <div class="nav-item" onclick="showPage('financeiro')">
+        <span class="icon">💰</span><span class="nav-label">Financeiro</span>
+      </div>
+      <div class="nav-item" onclick="showPage('compras')">
+        <span class="icon">🛒</span><span class="nav-label">Lista de Compras</span>
+        <span class="nav-badge" id="badge-compras">0</span>
+      </div>
+      <div class="nav-item" onclick="showPage('tarefas')">
+        <span class="icon">✅</span><span class="nav-label">Tarefas</span>
+        <span class="nav-badge" id="badge-tarefas">0</span>
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="date-display">
+        <strong id="sidebar-date"></strong>
+        <span id="sidebar-day"></span>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-wrapper">
+
+    <header class="topbar" id="topbar">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </header>
+
+    <main class="main">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <h2 id="greeting">Olá! 🌸</h2>
+          <p>Aqui está um resumo do seu dia</p>
+        </div>
+        <div class="grid-4 mb-24">
+          <div class="stat-card purple">
+            <div class="stat-icon">💰</div>
+            <div class="stat-value" id="dash-saldo">R$ 0</div>
+            <div class="stat-label">Saldo atual</div>
+          </div>
+          <div class="stat-card pink">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value" id="dash-tarefas">0</div>
+            <div class="stat-label">Tarefas pendentes</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">🛒</div>
+            <div class="stat-value" id="dash-compras">0</div>
+            <div class="stat-label">Itens na lista</div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-icon">💇</div>
+            <div class="stat-value" id="dash-hair">0%</div>
+            <div class="stat-label">Cronograma capilar</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Próximos eventos</div>
+            <div id="dash-eventos"><div class="empty-state"><div class="empty-icon">📅</div>Nenhum evento próximo</div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Resumo financeiro do mês</div>
+            <div class="finance-summary-grid">
+              <div class="fin-summary-box green-box">
+                <div class="fin-summary-label">RECEITAS</div>
+                <div class="fin-summary-value color-green" id="dash-receitas">R$ 0,00</div>
+              </div>
+              <div class="fin-summary-box red-box">
+                <div class="fin-summary-label">DESPESAS</div>
+                <div class="fin-summary-value color-red" id="dash-despesas">R$ 0,00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALENDÁRIO -->
+      <div class="page" id="page-calendario">
+        <div class="page-header page-header-row">
+          <div><h2>Calendário</h2><p>Organize seus compromissos</p></div>
+          <button class="btn btn-primary" onclick="openModal('modal-evento')">+ Novo Evento</button>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="cal-nav">
+              <button onclick="changeMonth(-1)">‹</button>
+              <h3 id="cal-month-year"></h3>
+              <button onclick="changeMonth(1)">›</button>
+            </div>
+            <div class="calendar-grid" id="calendar-grid"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Eventos — <span id="selected-date-label">hoje</span></div>
+            <div id="day-events"></div>
+            <div class="card-title" style="margin-top:20px">Todos os eventos</div>
+            <div id="all-events-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CABELO -->
+      <div class="page" id="page-cabelo">
+        <div class="page-header page-header-row">
+          <div><h2>Cronograma Capilar</h2><p>Cuide dos seus cabelos com carinho ✨</p></div>
+          <button class="btn btn-primary" onclick="resetHair()">↺ Reiniciar</button>
+        </div>
+        <div class="cronograma-tabs">
+          <div class="cron-tab active" onclick="showCronTab('semanal', this)">Semanal</div>
+          <div class="cron-tab" onclick="showCronTab('quinzenal', this)">Quinzenal</div>
+          <div class="cron-tab" onclick="showCronTab('mensal', this)">Mensal</div>
+        </div>
+        <div class="card">
+          <div class="progress-header">
+            <span style="color:var(--text-muted)">Progresso</span>
+            <span id="hair-progress-text">0 de 0 passos</span>
+          </div>
+          <div class="hair-progress"><div class="hair-progress-bar" id="hair-progress-bar" style="width:0%"></div></div>
+          <div id="hair-steps"></div>
+        </div>
+      </div>
+
+      <!-- FINANCEIRO -->
+      <div class="page" id="page-financeiro">
+        <div class="page-header page-header-row">
+          <div><h2>Financeiro</h2><p>Controle total das suas finanças</p></div>
+          <div class="btn-group">
+            <button class="btn btn-ghost" onclick="openModal('modal-meta')">🎯 Meta</button>
+            <button class="btn btn-primary" onclick="openModal('modal-transacao')">+ Transação</button>
+          </div>
+        </div>
+        <div class="grid-4 mb-24">
+          <div class="stat-card green">
+            <div class="stat-icon">💚</div>
+            <div class="stat-value" id="fin-receitas">R$ 0</div>
+            <div class="stat-label">Total Receitas</div>
+          </div>
+          <div class="stat-card danger-card">
+            <div class="stat-icon">🔴</div>
+            <div class="stat-value red-val" id="fin-despesas">R$ 0</div>
+            <div class="stat-label">Total Despesas</div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-icon">💜</div>
+            <div class="stat-value" id="fin-saldo">R$ 0</div>
+            <div class="stat-label">Saldo Atual</div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-icon">🎯</div>
+            <div class="stat-value" id="fin-economia">0%</div>
+            <div class="stat-label">Taxa de Poupança</div>
+          </div>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="showFinTab('extrato', this)">Extrato</button>
+          <button class="tab-btn" onclick="showFinTab('orcamento', this)">Orçamento</button>
+          <button class="tab-btn" onclick="showFinTab('metas', this)">Metas</button>
+        </div>
+        <div class="tab-content active" id="tab-extrato"><div id="transactions-list"></div></div>
+        <div class="tab-content" id="tab-orcamento">
+          <div class="card"><div class="card-title">Controle de orçamento por categoria</div><div id="budget-bars"></div></div>
+        </div>
+        <div class="tab-content" id="tab-metas">
+          <div id="metas-list"></div>
+          <div class="empty-state" id="metas-empty" style="display:none"><div class="empty-icon">🎯</div>Nenhuma meta criada.</div>
+        </div>
+      </div>
+
+      <!-- COMPRAS -->
+      <div class="page" id="page-compras">
+        <div class="page-header page-header-row">
+          <div><h2>Lista de Compras</h2><p>Nunca esqueça nada no mercado</p></div>
+          <div class="btn-group">
+            <button class="btn btn-ghost btn-sm" onclick="clearChecked()">Limpar marcados</button>
+            <button class="btn btn-primary" onclick="openModal('modal-compra')">+ Item</button>
+          </div>
+        </div>
+        <div id="shopping-list"></div>
+        <div class="shop-total">
+          <span class="shop-total-label">💰 Total estimado</span>
+          <span class="shop-total-value" id="shop-total">R$ 0,00</span>
+        </div>
+      </div>
+
+      <!-- TAREFAS -->
+      <div class="page" id="page-tarefas">
+        <div class="page-header page-header-row">
+          <div><h2>Tarefas</h2><p>Organize tudo o que precisa fazer</p></div>
+          <button class="btn btn-primary" onclick="openModal('modal-tarefa')">+ Nova Tarefa</button>
+        </div>
+        <div class="task-columns" id="task-board"></div>
+      </div>
+
+    </main>
+
+
+
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-evento">
+  <div class="modal">
+    <div class="modal-header"><h3>Novo Evento</h3><button class="close-btn" onclick="closeModal('modal-evento')">✕</button></div>
+    <div class="input-group"><label>Título do evento</label><input type="text" id="ev-titulo" placeholder="Ex: Consulta médica"></div>
+    <div class="input-row">
+      <div class="input-group"><label>Data</label><input type="date" id="ev-data"></div>
+      <div class="input-group"><label>Horário</label><input type="time" id="ev-hora"></div>
+    </div>
+    <div class="input-group"><label>Categoria</label>
+      <select id="ev-cat">
+        <option value="pessoal">Pessoal</option><option value="saude">Saúde</option>
+        <option value="trabalho">Trabalho</option><option value="cabelo">Cabelo</option><option value="financeiro">Financeiro</option>
+      </select>
+    </div>
+    <div class="input-group"><label>Descrição (opcional)</label><textarea id="ev-desc" placeholder="Detalhes..."></textarea></div>
+    <button class="btn btn-primary btn-full" onclick="addEvento()">Salvar Evento</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-transacao">
+  <div class="modal">
+    <div class="modal-header"><h3>Nova Transação</h3><button class="close-btn" onclick="closeModal('modal-transacao')">✕</button></div>
+    <div class="input-group"><label>Tipo</label>
+      <select id="tx-tipo"><option value="receita">💚 Receita</option><option value="despesa">🔴 Despesa</option></select>
+    </div>
+    <div class="input-group"><label>Descrição</label><input type="text" id="tx-desc" placeholder="Ex: Salário, Aluguel..."></div>
+    <div class="input-row">
+      <div class="input-group"><label>Valor (R$)</label><input type="number" id="tx-valor" placeholder="0,00" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="input-group"><label>Data</label><input type="date" id="tx-data"></div>
+    </div>
+    <div class="input-group"><label>Categoria</label>
+      <select id="tx-cat">
+        <option value="Salário">💼 Salário</option><option value="Freelance">💻 Freelance</option>
+        <option value="Alimentação">🍕 Alimentação</option><option value="Moradia">🏠 Moradia</option>
+        <option value="Transporte">🚗 Transporte</option><option value="Saúde">💊 Saúde</option>
+        <option value="Beleza">💅 Beleza</option><option value="Lazer">🎉 Lazer</option>
+        <option value="Educação">📚 Educação</option><option value="Roupas">👗 Roupas</option><option value="Outros">📦 Outros</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="addTransacao()">Salvar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-meta">
+  <div class="modal">
+    <div class="modal-header"><h3>Nova Meta Financeira</h3><button class="close-btn" onclick="closeModal('modal-meta')">✕</button></div>
+    <div class="input-group"><label>Nome da meta</label><input type="text" id="meta-nome" placeholder="Ex: Fundo de emergência"></div>
+    <div class="input-row">
+      <div class="input-group"><label>Valor alvo (R$)</label><input type="number" id="meta-alvo" placeholder="0,00" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="input-group"><label>Valor atual (R$)</label><input type="number" id="meta-atual" placeholder="0,00" min="0" step="0.01" inputmode="decimal"></div>
+    </div>
+    <div class="input-group"><label>Prazo</label><input type="date" id="meta-prazo"></div>
+    <button class="btn btn-primary btn-full" onclick="addMeta()">Criar Meta</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-compra">
+  <div class="modal">
+    <div class="modal-header"><h3>Adicionar Item</h3><button class="close-btn" onclick="closeModal('modal-compra')">✕</button></div>
+    <div class="input-group"><label>Nome do item</label><input type="text" id="cp-nome" placeholder="Ex: Leite integral"></div>
+    <div class="input-row">
+      <div class="input-group"><label>Categoria</label>
+        <select id="cp-cat">
+          <option value="Hortifruti">🥦 Hortifruti</option><option value="Laticínios">🥛 Laticínios</option>
+          <option value="Carnes">🥩 Carnes</option><option value="Padaria">🍞 Padaria</option>
+          <option value="Bebidas">🧃 Bebidas</option><option value="Limpeza">🧹 Limpeza</option>
+          <option value="Higiene">🧴 Higiene</option><option value="Cabelo">💇 Cabelo</option><option value="Outros">📦 Outros</option>
+        </select>
+      </div>
+      <div class="input-group"><label>Quantidade</label><input type="text" id="cp-qtd" placeholder="Ex: 2 un"></div>
+    </div>
+    <div class="input-group"><label>Preço estimado (R$)</label><input type="number" id="cp-preco" placeholder="0,00" min="0" step="0.01" inputmode="decimal"></div>
+    <button class="btn btn-primary btn-full" onclick="addCompra()">Adicionar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-tarefa">
+  <div class="modal">
+    <div class="modal-header"><h3>Nova Tarefa</h3><button class="close-btn" onclick="closeModal('modal-tarefa')">✕</button></div>
+    <div class="input-group"><label>Título</label><input type="text" id="tk-titulo" placeholder="O que precisa ser feito?"></div>
+    <div class="input-row">
+      <div class="input-group"><label>Categoria</label><input type="text" id="tk-cat" placeholder="Ex: Pessoal"></div>
+      <div class="input-group"><label>Prioridade</label>
+        <select id="tk-prio"><option value="alta">🔴 Alta</option><option value="media">🟡 Média</option><option value="baixa">🟢 Baixa</option></select>
+      </div>
+    </div>
+    <div class="input-row">
+      <div class="input-group"><label>Prazo (opcional)</label><input type="date" id="tk-data"></div>
+      <div class="input-group"><label>Status</label>
+        <select id="tk-status"><option value="todo">A fazer</option><option value="doing">Em andamento</option><option value="done">Concluído</option></select>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="addTarefa()">Criar Tarefa</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
